@@ -12,6 +12,7 @@ __pycache__/
 
 # Secrets
 .env
+env.py
 
 # MycroPython filesystem fioles (Optional, if syncing board via rshell/ampy/mpremote)
 

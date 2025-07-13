@@ -25,12 +25,13 @@
 #Basic WiFi configuration:
 
 from time import sleep
+import env
 import network
 
 class Sta:
 
-   AP = "ATLAS 2.4G"  # change to your SSID
-   PWD = "Charlie7445"  # cjange to your password
+   AP = env.WIFI_SSID  # change to your SSID
+   PWD = env.WIFI_PASS  # cjange to your password
 
    def __init__(my, ap='', pwd=''):
       network.WLAN(network.AP_IF).active(False) # disable access point
