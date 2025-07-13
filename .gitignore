@@ -1,0 +1,25 @@
+# Byte-compiled / temporary files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets
+.env
+
+# MycroPython filesystem fioles (Optional, if syncing board via rshell/ampy/mpremote)
+
+*.mpy
+*.bin
+*.hex
+*.img
+
+# OS Files
+.DS_Store
+Thumbs.db
