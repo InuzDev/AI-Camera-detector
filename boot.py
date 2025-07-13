@@ -31,7 +31,7 @@ import network
 class Sta:
 
    AP = env.WIFI_SSID  # change to your SSID
-   PWD = env.WIFI_PASS  # cjange to your password
+   PWD = env.WIFI_PASS  # change to your password
 
    def __init__(my, ap='', pwd=''):
       network.WLAN(network.AP_IF).active(False) # disable access point

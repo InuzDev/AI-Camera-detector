@@ -9,3 +9,17 @@ If the other robot is configured to turn off the fire (Like a firefighter robot)
 ## Preparation of the `boot.py` file
 
 In this file, you can see there a line of code where you required to put your network connection. For that, we opted to use .env files to not share the information between git commits. (which I sadly did with the initialization of this repository)
+
+To properly add your network information and avoid sharing it between commits, use the `loadEnv.py` file.
+
+### Steps to create the .env file
+
+First, we create a .env file (Which is ignore by .gitignore), in that file we put
+
+```env
+WIFI_SSID=<Network Name>
+WIFI_PASS=<Network Password>
+```
+
+Now, after introducing the information. We now just run the loadEnv.py with `py loadEnv.py` in the command line.
+> If `py loadEnd.py` doesn't work. Try `python loadEnv.py`.
