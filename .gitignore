@@ -10,9 +10,14 @@ __pycache__/
 *.swp
 *.swo
 
+# Trained AI
+
+fire_model.keras
+
 # Secrets
 .env
 env.py
+tf-env/
 
 # MycroPython filesystem fioles (Optional, if syncing board via rshell/ampy/mpremote)
 
