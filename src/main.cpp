@@ -18,8 +18,8 @@ EventGroupHandle_t wifi_event_group;
 
 #define WIFI_CONNECTED_BIT BIT0
 
-#define WIFI_SSID "YourSSID"
-#define WIFI_PASSWORD "YourPassword"
+#define WIFI_SSID "YourSSID"         // This too, a secret
+#define WIFI_PASSWORD "YourPassword" // We going to make this a secret
 #define STREAM_PORT 80
 
 #define AUTH_UID "david"
@@ -125,13 +125,11 @@ void connect_wifi()
 
   ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-  wifi_config_t wifi_config = {
-      .sta = {
-          .ssid = WIFI_SSID,
-          .password = WIFI_PASSWORD,
-          .threshold.authmode = WIFI_AUTH_WPA2_PSK}};
+  wifi_config_t wifi_config = {}; // zero-init entire struct
 
-  strncpy((char *)wifi_config_sta.ssid, WIFI_SSID, sizeof(wifi_config.sta.ssid));
+  strcpy((char *)wifi_config.sta.ssid, WIFI_SSID);
+  strcpy((char *)wifi_config.sta.password, WIFI_PASSWORD);
+  wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
 
   ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
   ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
