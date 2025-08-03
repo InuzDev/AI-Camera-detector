@@ -24,6 +24,8 @@
 
 #Basic WiFi configuration:
 
+
+
 from time import sleep
 import env
 import network

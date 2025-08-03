@@ -3,6 +3,13 @@
 > Due the my pc being low-end I couldn't complete the AI training correctly.
 > NOTE: Activate the virtual environment before installing packages or running scripts.
 
+## Environment variables preparation template
+
+```env
+WIFI_SSID <This is your WiFi ID/Name>
+WIFI_PASS <This is your WiFi Connection password>
+```
+
 ## What is this about?
 
 This project made to learn how cameras works and how AI is made. to try and learn, I decided to try and code a camera that detects fires and send a signal to the user or to another robot.
@@ -54,7 +61,7 @@ tf-env\Scripts\activate.bat
 .\tf-env\Scripts\Activate.ps1
 ```
 
-> If you get issues running this command, run this command once -> `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+> If you get issues running this command, run this command once -> `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`
 
 ### Git Bash or WSL
 

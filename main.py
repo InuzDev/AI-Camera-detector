@@ -47,7 +47,7 @@ Pragma: no-cache""",
     'frame': """--kaki5
 Content-Type: image/jpeg"""
 }
-
+# This code need to load an AI... and run it
 # Init Wi-Fi connection
 def connect_wifi(ssid, password):
     wlan = network.WLAN(network.STA_IF)
@@ -65,8 +65,10 @@ def connect_wifi(ssid, password):
     return None
 
 # Wi-Fi credentials
-SSID = 'ATLAS 2.4G'
-PASSWORD = 'Charlie7445'
+# SSID = 'ATLAS 2.4G'
+# PASSWORD = 'Charlie7445'
+
+
 
 # Start
 wlan = connect_wifi(SSID, PASSWORD)
@@ -74,8 +76,8 @@ cam_ready = camera.init()
 print("Camera ready?:", cam_ready)
 
 if wlan and cam_ready:
-    camera.framesize(11)
-    camera.quality(5)
+    camera.framesize(11) # Resolution of the picture, higher, more resolution.
+    camera.quality(5) # This is the quality, the higher is, the more quality but more heat generates.
     camera.contrast(2)
 
     port = 80

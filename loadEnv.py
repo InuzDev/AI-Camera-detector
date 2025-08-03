@@ -1,3 +1,5 @@
+# This code is only used to generate an .env file for the Board, since it doesn't compile .env files.
+
 from pathlib import Path
 
 def load_dotenv(dotenv_path=".env"):
