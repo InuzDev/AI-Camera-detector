@@ -1,18 +1,27 @@
-#include <Arduino.h>
+#include <stdio.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
-// put function declarations here:
+// Put function declarations here:
 int myFunction(int, int);
 
-void setup() {
-  // put your setup code here, to run once:
+// This is the ESP-IDF entry point
+extern "C" void app_main()
+{
+  // Initialization code runs once
   int result = myFunction(2, 3);
+  printf("Result: %d\n", result);
+
+  // Example loop simulation using FreeRTOS task
+  while (true)
+  {
+    printf("Running main loop...\n");
+    vTaskDelay(pdMS_TO_TICKS(1000)); // delay 1 second
+  }
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
+// Put function definitions here:
+int myFunction(int x, int y)
+{
   return x + y;
 }
