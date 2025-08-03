@@ -1,6 +1,15 @@
 # This file was automatically generated for projects
 # without default 'CMakeLists.txt' file.
 
-FILE(GLOB_RECURSE app_sources ${CMAKE_SOURCE_DIR}/src/*.*)
+# Declare C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-idf_component_register(SRCS ${app_sources})
+# Manually include .cpp and .c files, not headers
+file(GLOB_RECURSE app_sources 
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+)
+
+idf_component_register(SRCS ${app_sources}
+                       INCLUDE_DIRS ".")
