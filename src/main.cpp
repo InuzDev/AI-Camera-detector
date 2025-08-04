@@ -29,31 +29,31 @@ static const char *TAG = "CAM_SERVER";
 
 // Camera config for Seeed XIAO ESP32S3 Sense
 camera_config_t camera_config = {
-    camera_config.pin_pwdn = -1,
-    camera_config.pin_reset = -1,
-    camera_config.pin_xclk = 10,
-    camera_config.pin_sccb_sda = 8,
-    camera_config.pin_sccb_scl = 9,
-    camera_config.pin_d7 = 18,
-    camera_config.pin_d6 = 17,
-    camera_config.pin_d5 = 16,
-    camera_config.pin_d4 = 15,
-    camera_config.pin_d3 = 14,
-    camera_config.pin_d2 = 13,
-    camera_config.pin_d1 = 12,
-    camera_config.pin_d0 = 11,
-    camera_config.pin_vsync = 6,
-    camera_config.pin_href = 7,
-    camera_config.pin_pclk = 5,
-    camera_config.xclk_freq_hz = 20000000,
-    camera_config.ledc_timer = LEDC_TIMER_0,
-    camera_config.ledc_channel = LEDC_CHANNEL_0,
-    camera_config.pixel_format = PIXFORMAT_JPEG,
-    camera_config.frame_size = FRAMESIZE_QVGA,
-    camera_config.jpeg_quality = 10,
-    camera_config.fb_count = 2,
-    camera_config.grab_mode = CAMERA_GRAB_LATEST,
-    camera_config.fb_location = CAMERA_FB_IN_PSRAM,
+    .pin_pwdn = -1,
+    .pin_reset = -1,
+    .pin_xclk = 10,
+    .pin_sccb_sda = 8,
+    .pin_sccb_scl = 9,
+    .pin_d7 = 18,
+    .pin_d6 = 17,
+    .pin_d5 = 16,
+    .pin_d4 = 15,
+    .pin_d3 = 14,
+    .pin_d2 = 13,
+    .pin_d1 = 12,
+    .pin_d0 = 11,
+    .pin_vsync = 6,
+    .pin_href = 7,
+    .pin_pclk = 5,
+    .xclk_freq_hz = 20000000,
+    .ledc_timer = LEDC_TIMER_0,
+    .ledc_channel = LEDC_CHANNEL_0,
+    .pixel_format = PIXFORMAT_JPEG,
+    .frame_size = FRAMESIZE_QVGA,
+    .jpeg_quality = 10,
+    .fb_count = 2,
+    .fb_location = CAMERA_FB_IN_PSRAM,
+    .grab_mode = CAMERA_GRAB_LATEST, // WE need to find solution.
 };
 
 esp_err_t stream_handler(httpd_req_t *req)
@@ -125,7 +125,7 @@ void connect_wifi()
 
   ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-  wifi_config_t wifi_config = {}; // zero-init entire struct
+  wifi_config_t wifi_config = {};
 
   strcpy((char *)wifi_config.sta.ssid, WIFI_SSID);
   strcpy((char *)wifi_config.sta.password, WIFI_PASSWORD);
@@ -138,7 +138,7 @@ void connect_wifi()
   ESP_LOGI(TAG, "Wi-Fi init done");
 
   ESP_LOGI(TAG, "Waiting for connection...");
-  EventBits_t bits = xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_BIT, pdTRUE, pdFALSE, portMAX_DELAY);
+  EventBits_t bits;
 
   wifi_event_group = xEventGroupCreate();
 
