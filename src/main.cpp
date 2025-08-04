@@ -18,8 +18,8 @@ EventGroupHandle_t wifi_event_group;
 
 #define WIFI_CONNECTED_BIT BIT0
 
-#define WIFI_SSID "YourSSID"         // This too, a secret
-#define WIFI_PASSWORD "YourPassword" // We going to make this a secret
+#define WIFI_SSID "StarlinkGil"   // This too, a secret
+#define WIFI_PASSWORD "Diego2125" // We going to make this a secret
 #define STREAM_PORT 80
 
 #define AUTH_UID "david"
@@ -27,34 +27,34 @@ EventGroupHandle_t wifi_event_group;
 
 static const char *TAG = "CAM_SERVER";
 
-// Camera config for Seeed XIAO ESP32S3 Sense
+// Camera config for Seeed XIAO ESP32S3 Sense (OV2640)
 camera_config_t camera_config = {
     .pin_pwdn = -1,
     .pin_reset = -1,
     .pin_xclk = 10,
     .pin_sccb_sda = 8,
     .pin_sccb_scl = 9,
-    .pin_d7 = 18,
-    .pin_d6 = 17,
-    .pin_d5 = 16,
-    .pin_d4 = 15,
-    .pin_d3 = 14,
-    .pin_d2 = 13,
-    .pin_d1 = 12,
-    .pin_d0 = 11,
-    .pin_vsync = 6,
-    .pin_href = 7,
-    .pin_pclk = 5,
-    .xclk_freq_hz = 20000000,
+    .pin_d7 = 11,
+    .pin_d6 = 39,
+    .pin_d5 = 40,
+    .pin_d4 = 14,
+    .pin_d3 = 13,
+    .pin_d2 = 41,
+    .pin_d1 = 42,
+    .pin_d0 = 12,
+    .pin_vsync = 38,
+    .pin_href = 47,
+    .pin_pclk = 48,
+    .xclk_freq_hz = 5000000,
     .ledc_timer = LEDC_TIMER_0,
     .ledc_channel = LEDC_CHANNEL_0,
     .pixel_format = PIXFORMAT_JPEG,
     .frame_size = FRAMESIZE_QVGA,
-    .jpeg_quality = 10,
+    .jpeg_quality = 12,
     .fb_count = 2,
     .fb_location = CAMERA_FB_IN_PSRAM,
-    .grab_mode = CAMERA_GRAB_LATEST, // WE need to find solution.
-};
+    .grab_mode = CAMERA_GRAB_LATEST,
+    .sccb_i2c_port = 1};
 
 esp_err_t stream_handler(httpd_req_t *req)
 {
@@ -138,7 +138,6 @@ void connect_wifi()
   ESP_LOGI(TAG, "Wi-Fi init done");
 
   ESP_LOGI(TAG, "Waiting for connection...");
-  EventBits_t bits;
 
   wifi_event_group = xEventGroupCreate();
 
@@ -146,7 +145,7 @@ void connect_wifi()
   vTaskDelay(4000 / portTICK_PERIOD_MS); // wait ~4s
 }
 
-void app_main()
+extern "C" void app_main()
 {
   wifi_event_group = xEventGroupCreate();
   esp_err_t err = nvs_flash_init();
@@ -157,11 +156,21 @@ void app_main()
   connect_wifi();
 
   ESP_LOGI(TAG, "Initializing camera...");
-  if (esp_camera_init(&camera_config) != ESP_OK)
+  esp_err_t cam_err;
+  int retry = 0;
+  do
   {
-    ESP_LOGE(TAG, "Camera init failed");
-    return;
-  }
+    cam_err = esp_camera_init(&camera_config);
+    if (cam_err != ESP_OK)
+    {
+      ESP_LOGE(TAG, "Camera init failed: %s. Retrying in 2s...", esp_err_to_name(cam_err));
+      vTaskDelay(2000 / portTICK_PERIOD_MS);
+      retry++;
+    }
+  } while (cam_err != ESP_OK);
+
+  sensor_t *s = esp_camera_sensor_get();
+  ESP_LOGI(TAG, "Sensor PID: 0x%02x", s->id.PID);
 
   ESP_LOGI(TAG, "Starting stream server...");
   start_server();
