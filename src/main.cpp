@@ -1,5 +1,6 @@
 extern "C"
 {
+#include "secret.h"
 #include <stdio.h>
 #include <string.h>
 #include "esp_camera.h"
@@ -15,15 +16,6 @@ extern "C"
 }
 
 EventGroupHandle_t wifi_event_group;
-
-#define WIFI_CONNECTED_BIT BIT0
-
-#define WIFI_SSID "ATLAs 2.4G" // This too, a secret
-#define WIFI_PASSWORD ""       // We going to make this a secret
-#define STREAM_PORT 80
-
-#define AUTH_UID "david"
-#define AUTH_PWD "Dev"
 
 static const char *TAG = "CAM_SERVER";
 
@@ -52,7 +44,7 @@ camera_config_t config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_QVGA,
+    .frame_size = FRAMESIZE_5MP,
     .jpeg_quality = 10,
     .fb_count = 1,
     .fb_location = CAMERA_FB_IN_PSRAM,
@@ -141,8 +133,6 @@ void connect_wifi()
   ESP_LOGI(TAG, "Wi-Fi init done");
 
   ESP_LOGI(TAG, "Waiting for connection...");
-
-  wifi_event_group = xEventGroupCreate();
 
   esp_wifi_connect();
   vTaskDelay(4000 / portTICK_PERIOD_MS); // wait ~4s
