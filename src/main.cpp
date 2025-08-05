@@ -13,11 +13,22 @@ extern "C"
 #include "lwip/sys.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
+
+  // This is something to set up the microSD card. We work on it later.
+  // #include "esp_vfs_fat.h"
+  // #include "sdmmc_cmd.h"
 }
+
+#define STREAM_PORT 80
 
 EventGroupHandle_t wifi_event_group;
 
 static const char *TAG = "CAM_SERVER";
+
+// We finish this later. We got new orders.
+void print_stream_url()
+{
+}
 
 // Camera config for Seeed XIAO ESP32S3 Sense (OV2640)
 camera_config_t config = {
@@ -44,13 +55,14 @@ camera_config_t config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_5MP,
+    .frame_size = FRAMESIZE_HQVGA,
     .jpeg_quality = 10,
     .fb_count = 1,
-    .fb_location = CAMERA_FB_IN_PSRAM,
+    .fb_location = CAMERA_FB_IN_DRAM,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
     .sccb_i2c_port = 0,
 };
+
 esp_err_t stream_handler(httpd_req_t *req)
 {
   char url[128];
@@ -140,6 +152,22 @@ void connect_wifi()
 
 extern "C" void app_main()
 {
+  // sdmmc_host_t host = SDMMC_HOST_DEFAULT();
+  // sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
+  // esp_vfs_fat_sdmmc_mount_config_t mount_config = {
+  //     .format_if_mount_failed = false,
+  //     .max_files = 5,
+  //     .allocation_unit_size = 16 * 1024};
+  // sdmmc_card_t *card;
+  // esp_err_t ret = esp_vfs_fat_sdmmc_mount("/sdcard", &host, &slot_config, &mount_config, &card);
+  // if (ret != ESP_OK)
+  // {
+  //   ESP_LOGE(TAG, "Failed to mount SD card: %s", esp_err_to_name(ret));
+  // }
+  // else
+  // {
+  //   ESP_LOGI(TAG, "SD card mounted");
+  // }
   wifi_event_group = xEventGroupCreate();
   esp_err_t err = nvs_flash_init();
   if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND)
