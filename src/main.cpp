@@ -1,5 +1,6 @@
 extern "C"
 {
+#include "secret.h"
 #include <stdio.h>
 #include <string.h>
 #include "esp_camera.h"
@@ -16,46 +17,40 @@ extern "C"
 
 EventGroupHandle_t wifi_event_group;
 
-#define WIFI_CONNECTED_BIT BIT0
-
-#define WIFI_SSID "StarlinkGil"   // This too, a secret
-#define WIFI_PASSWORD "Diego2125" // We going to make this a secret
-#define STREAM_PORT 80
-
-#define AUTH_UID "david"
-#define AUTH_PWD "Dev"
-
 static const char *TAG = "CAM_SERVER";
 
 // Camera config for Seeed XIAO ESP32S3 Sense (OV2640)
-camera_config_t camera_config = {
+camera_config_t config = {
     .pin_pwdn = -1,
     .pin_reset = -1,
     .pin_xclk = 10,
-    .pin_sccb_sda = 8,
-    .pin_sccb_scl = 9,
-    .pin_d7 = 11,
-    .pin_d6 = 39,
-    .pin_d5 = 40,
-    .pin_d4 = 14,
-    .pin_d3 = 13,
-    .pin_d2 = 41,
-    .pin_d1 = 42,
-    .pin_d0 = 12,
-    .pin_vsync = 38,
-    .pin_href = 47,
-    .pin_pclk = 48,
-    .xclk_freq_hz = 5000000,
+    .pin_sccb_sda = 40,
+    .pin_sccb_scl = 39,
+
+    .pin_d7 = 48,
+    .pin_d6 = 47,
+    .pin_d5 = 38,
+    .pin_d4 = 21,
+    .pin_d3 = 14,
+    .pin_d2 = 13,
+    .pin_d1 = 12,
+    .pin_d0 = 11,
+    .pin_vsync = 42,
+    .pin_href = 41,
+    .pin_pclk = 2,
+
+    .xclk_freq_hz = 20000000,
     .ledc_timer = LEDC_TIMER_0,
     .ledc_channel = LEDC_CHANNEL_0,
-    .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_QVGA,
-    .jpeg_quality = 12,
-    .fb_count = 2,
-    .fb_location = CAMERA_FB_IN_PSRAM,
-    .grab_mode = CAMERA_GRAB_LATEST,
-    .sccb_i2c_port = 1};
 
+    .pixel_format = PIXFORMAT_JPEG,
+    .frame_size = FRAMESIZE_5MP,
+    .jpeg_quality = 10,
+    .fb_count = 1,
+    .fb_location = CAMERA_FB_IN_PSRAM,
+    .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
+    .sccb_i2c_port = 0,
+};
 esp_err_t stream_handler(httpd_req_t *req)
 {
   char url[128];
@@ -139,8 +134,6 @@ void connect_wifi()
 
   ESP_LOGI(TAG, "Waiting for connection...");
 
-  wifi_event_group = xEventGroupCreate();
-
   esp_wifi_connect();
   vTaskDelay(4000 / portTICK_PERIOD_MS); // wait ~4s
 }
@@ -160,7 +153,7 @@ extern "C" void app_main()
   int retry = 0;
   do
   {
-    cam_err = esp_camera_init(&camera_config);
+    cam_err = esp_camera_init(&config);
     if (cam_err != ESP_OK)
     {
       ESP_LOGE(TAG, "Camera init failed: %s. Retrying in 2s...", esp_err_to_name(cam_err));

@@ -5,11 +5,14 @@ build/
 *.bin
 *.hex
 
+include/secret.h
+
 # ESP-IDF project-specific files
-sdkconfig.
+sdkconfig
 sdkconfig.old
 sdkconfig.defaults
 sdkconfig.seeed_xiao_esp32s3
+sdkconfig.seeed_xiao_esp32s3.old
 
 # PlatformIO (if present)
 .pio/
