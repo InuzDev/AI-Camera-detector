@@ -13,10 +13,9 @@ extern "C"
 #include "lwip/sys.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
-
-  // This is something to set up the microSD card. We work on it later.
-  // #include "esp_vfs_fat.h"
-  // #include "sdmmc_cmd.h"
+#include "esp_netif.h"
+#include "esp_netif_ip_addr.h"
+#include "esp_netif_types.h"
 }
 
 #define STREAM_PORT 80
@@ -24,11 +23,6 @@ extern "C"
 EventGroupHandle_t wifi_event_group;
 
 static const char *TAG = "CAM_SERVER";
-
-// We finish this later. We got new orders.
-void print_stream_url()
-{
-}
 
 // Camera config for Seeed XIAO ESP32S3 Sense (OV2640)
 camera_config_t config = {
