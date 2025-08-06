@@ -62,17 +62,28 @@ class Sta:
 
    def wait(my):
       cnt = 30
+      my.connect()  # Actually initiate the connection
       while cnt > 0:
-         print("Waiting ..." )
-         # con(my.ap, my.pwd) # Connect to an AP
+         print("Waiting for connection..." )
          if my.wlan.isconnected():
            print("Connected to %s" % my.ap)
            print('network config:', my.wlan.ifconfig())
-           cnt = 0
+           return True
          else:
-           sleep(5)
-           cnt -= 5
-      return
+           sleep(1)
+           cnt -= 1
+      print("Connection timeout!")
+      return False
 
    def scan(my):
       return my.wlan.scan()   # Scan for available access points
+
+# Initialize WiFi connection on boot
+print("Initializing WiFi connection...")
+wifi = Sta()
+wifi_connected = wifi.wait()
+
+if wifi_connected:
+    print("Boot: WiFi connection successful!")
+else:
+    print("Boot: WiFi connection failed!")
