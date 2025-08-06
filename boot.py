@@ -51,8 +51,27 @@ class Sta:
         my.ap = ap
         my.pwd = pwd
 
-      if not my.wlan.isconnected(): 
-        my.wlan.connect(my.ap, my.pwd)
+      if not my.wlan.isconnected():
+        try:
+          # Ensure WiFi is properly disconnected first
+          my.wlan.disconnect()
+          sleep(1)
+          # Reconnect with credentials
+          my.wlan.connect(my.ap, my.pwd)
+        except OSError as e:
+          print("WiFi connect error: " + str(e))
+          # Try to reset WiFi module
+          my.wlan.active(False)
+          sleep(2)
+          my.wlan.active(True)
+          sleep(1)
+          # Retry connection
+          try:
+            my.wlan.connect(my.ap, my.pwd)
+          except OSError as e2:
+            print("WiFi retry failed:", e2)
+            return False
+      return True
 
    def status(my):
       if my.wlan.isconnected():
@@ -62,9 +81,14 @@ class Sta:
 
    def wait(my):
       cnt = 30
-      my.connect()  # Actually initiate the connection
+      connect_result = my.connect()  # Actually initiate the connection
+      
+      if not connect_result:
+        print("Initial connection failed!")
+        return False
+        
       while cnt > 0:
-         print("Waiting for connection..." )
+         print("Waiting for connection... (%ds remaining)" % cnt)
          if my.wlan.isconnected():
            print("Connected to %s" % my.ap)
            print('network config:', my.wlan.ifconfig())
@@ -72,18 +96,35 @@ class Sta:
          else:
            sleep(1)
            cnt -= 1
+           
+           # Try reconnecting every 10 seconds if still failing
+           if cnt % 10 == 0 and cnt > 0:
+             print("Retrying connection...")
+             my.connect()
+             
       print("Connection timeout!")
       return False
 
    def scan(my):
       return my.wlan.scan()   # Scan for available access points
 
-# Initialize WiFi connection on boot
+# Initialize WiFi connection on boot with error handling
 print("Initializing WiFi connection...")
-wifi = Sta()
-wifi_connected = wifi.wait()
+wifi_connected = False
 
-if wifi_connected:
-    print("Boot: WiFi connection successful!")
-else:
-    print("Boot: WiFi connection failed!")
+try:
+    wifi = Sta()
+    wifi_connected = wifi.wait()
+    
+    if wifi_connected:
+        print("Boot: WiFi connection successful!")
+    else:
+        print("Boot: WiFi connection failed!")
+        
+except Exception as e:
+    print("Boot: WiFi initialization error:", e)
+    print("Boot: Continuing without WiFi...")
+    
+# Make wifi object available globally for main.py
+if 'wifi' not in locals():
+    wifi = None

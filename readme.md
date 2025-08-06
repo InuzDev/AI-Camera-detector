@@ -6,8 +6,8 @@
 ## Environment variables preparation template
 
 ```env
-WIFI_SSID <This is your WiFi ID/Name>
-WIFI_PASS <This is your WiFi Connection password>
+WIFI_SSID="<This is your WiFi ID/Name>"
+WIFI_PASS="<This is your WiFi Connection password>"
 ```
 
 ## What is this about?
@@ -24,12 +24,8 @@ To properly add your network information and avoid sharing it between commits, u
 
 ### Steps to create the .env file
 
-First, we create a .env file (Which is ignore by .gitignore), in that file we put
-
-```env
-WIFI_SSID=<Network Name>
-WIFI_PASS=<Network Password>
-```
+First, we create a .env file (Which is ignore by .gitignore)
+> Follow the environment template shown in the start of this file.
 
 Now, after introducing the information. We now just run the loadEnv.py with `py loadEnv.py` in the command line.
 > If `py loadEnd.py` doesn't work. Try `python loadEnv.py`.
