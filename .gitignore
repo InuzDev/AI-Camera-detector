@@ -10,6 +10,12 @@ __pycache__/
 *.swp
 *.swo
 
+*.uf2
+
+Server/model/*
+Server/model_v2/*
+Server/ML-SERVER/*
+
 # Trained AI
 
 fire_model.keras
