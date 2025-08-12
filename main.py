@@ -1,18 +1,13 @@
-
 # The MIT License (MIT)
-#
 # Copyright (c) Sharil Tumin
-#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,22 +17,33 @@
 # THE SOFTWARE.
 #-----------------------------------------------------------------------------
 
-# run this on ESP32 Camera
+"""
+main.py - ESP32 Camera Streaming and WiFi Control
 
-import env
-import esp
-import network
-import socket as soc
-import camera
-from time import sleep
+This script runs on the ESP32 camera module. It:
+- Connects to WiFi using hardcoded credentials (edit as needed)
+- Initializes the camera
+- Starts an HTTP MJPEG streaming server with basic authentication
+- Streams camera frames to any client that authenticates
+- Handles connection errors and camera readiness
 
-esp.osdebug(None)  # Disable debug logs
+Sections are fully documented for clarity and maintainability.
+"""
 
-# Camera authentication
+import env              # Loads environment variables (not used in this script, but imported for consistency)
+import esp              # ESP32-specific functions
+import network          # MicroPython network module for WiFi
+import socket as soc    # MicroPython socket module
+import camera           # ESP32 camera module
+from time import sleep  # Used for connection delays
+
+esp.osdebug(None)  # Disable debug logs for cleaner output
+
+# Camera authentication credentials (change as needed)
 UID = 'david'
 PWD = 'Dev'
 
-# Camera headers for MJPEG streaming
+# HTTP headers for MJPEG streaming
 hdr = {
     'stream': """HTTP/1.1 200 OK
 Content-Type: multipart/x-mixed-replace; boundary=kaki5
@@ -48,9 +54,18 @@ Pragma: no-cache""",
     'frame': """--kaki5
 Content-Type: image/jpeg"""
 }
-# This code need to load an AI... and run it
-# Init Wi-Fi connection
+
+# --- WiFi Connection Logic ---
 def connect_wifi(ssid, password):
+    """
+    Connect to a WiFi network using the given SSID and password.
+    Retries connection for up to 10 attempts (20 seconds total).
+    Args:
+        ssid (str): WiFi network name
+        password (str): WiFi password
+    Returns:
+        WLAN object if connected, None otherwise
+    """
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     wlan.disconnect()
@@ -65,20 +80,25 @@ def connect_wifi(ssid, password):
     print("Wi-Fi connection failed.")
     return None
 
-# Wi-Fi credentials
+# Wi-Fi credentials (edit as needed)
 SSID = "Vasquez Gonzalez Google"
 PASSWORD = "Bendecidos"
 
-# Start
+# --- Main Startup Sequence ---
+
+# Connect to WiFi
 wlan = connect_wifi(SSID, PASSWORD)
+# Initialize camera
 cam_ready = camera.init()
 print("Camera ready?:", cam_ready)
 
 if wlan and cam_ready:
-    camera.framesize(11) # Resolution of the picture, higher, more resolution.
-    camera.quality(5) # This is the quality, the higher is, the more quality but more heat generates.
-    camera.contrast(2)
+    # Configure camera settings
+    camera.framesize(11)  # Set resolution (higher = more detail)
+    camera.quality(11)    # Set JPEG quality (higher = better, but more heat)
+    camera.contrast(9)    # Set image contrast
 
+    # Set up HTTP server for MJPEG streaming
     port = 80
     addr = soc.getaddrinfo('0.0.0.0', port)[0][-1]
     s = soc.socket(soc.AF_INET, soc.SOCK_STREAM)
@@ -93,10 +113,12 @@ if wlan and cam_ready:
         print('Request from:', ca)
         
         try:
+            # Read HTTP request
             w = cs.recv(200)
             request_line = w.decode().split('\r\n')[0]
             print("Request line:", request_line)
             
+            # Parse HTTP request path and extract credentials
             parts = request_line.split()
             if len(parts) < 2:
                 raise ValueError("Invalid HTTP request")
@@ -106,15 +128,18 @@ if wlan and cam_ready:
             uid = segments[0] if len(segments) > 0 else ''
             pwd = segments[1] if len(segments) > 1 else ''
             
+            # Basic authentication check
             if not (uid == UID and pwd == PWD):
                 print("Authentication failed")
                 cs.close()
                 continue
+            # Send MJPEG stream headers
             cs.write(b'%s\r\n\r\n' % hdr['stream'].encode())
             pic = camera.capture
             put = cs.write
             hr = hdr['frame'].encode()
             
+            # Stream camera frames in a loop
             while True:
                 try:
                     frame = pic()
@@ -136,6 +161,7 @@ if wlan and cam_ready:
             break
 
 else:
+    # Error handling for WiFi or camera failure
     if not wlan:
         print("Wi-Fi not connected.")
     if not cam_ready:

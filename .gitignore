@@ -5,6 +5,7 @@ __pycache__/
 *.pyd
 
 # IDE/editor settings
+.qodo
 .vscode/
 .idea/
 *.swp
@@ -17,8 +18,8 @@ Server/model_v2/*
 Server/ML-SERVER/*
 
 # Trained AI
-
-fire_model.keras
+micropython
+esp-idf
 
 # Secrets
 .env
@@ -26,7 +27,6 @@ env.py
 tf-env/
 
 # MycroPython filesystem fioles (Optional, if syncing board via rshell/ampy/mpremote)
-
 *.mpy
 *.bin
 *.hex
