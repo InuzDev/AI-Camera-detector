@@ -1,6 +1,26 @@
-# Byte-compiled / temporary files
+# Build artifacts
+build/
+*.elf
+*.map
+*.bin
+*.hex
+
+# ESP-IDF project-specific files
+sdkconfig.
+sdkconfig.old
+sdkconfig.defaults
+sdkconfig.seeed_xiao_esp32s3
+
+# PlatformIO (if present)
+.pio/
+.pioenvs/
+.vscode/
+.clangd/
+.clang-tidy
+
+# ESP-IDF Python tools
 __pycache__/
-*.py[cod]
+*.pyc
 *.pyo
 *.pyd
 
@@ -17,10 +37,6 @@ Server/model/*
 Server/model_v2/*
 Server/ML-SERVER/*
 
-# Trained AI
-micropython
-esp-idf
-
 # Secrets
 .env
 env.py
@@ -34,4 +50,8 @@ tf-env/
 
 # OS Files
 .DS_Store
-Thumbs.db
+*.orig
+
+# CLion or other IDE settings
+.idea/
+.vscode/
