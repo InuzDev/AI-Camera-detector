@@ -12,7 +12,7 @@ from ultralytics import YOLO # Modelo YOLO para detección de objetos
 url = "http://192.168.0.171/david/Dev"  # Cambia la IP según tu red
 
 # Cargar modelo YOLO entrenado
-model = YOLO("model_v2/runs/detect/train2/weights/best.pt")
+model = YOLO("model/runs/detect/train/weights/best.pt")
 
 # Captura del stream MJPEG
 cap = cv2.VideoCapture(url)

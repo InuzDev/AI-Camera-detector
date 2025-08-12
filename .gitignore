@@ -36,7 +36,6 @@ __pycache__/
 
 *.uf2
 
-Server/model/*
 Server/model_v2/*
 Server/ML-SERVER/*
 
