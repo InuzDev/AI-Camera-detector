@@ -24,18 +24,31 @@ __pycache__/
 *.pyo
 *.pyd
 
-# CMake junk
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-
-# Backup/editor files
-*.bak
+# IDE/editor settings
+.qodo
+.vscode/
+.idea/
 *.swp
 *.swo
-*.swn
-*.log
+
+*.uf2
+
+Server/model/*
+Server/model_v2/*
+Server/ML-SERVER/*
+
+# Secrets
+.env
+env.py
+tf-env/
+
+# MycroPython filesystem fioles (Optional, if syncing board via rshell/ampy/mpremote)
+*.mpy
+*.bin
+*.hex
+*.img
+
+# OS Files
 .DS_Store
 *.orig
 
