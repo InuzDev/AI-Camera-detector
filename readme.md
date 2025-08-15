@@ -1,4 +1,4 @@
-# Firevolt AI Camera Detector
+# AI Camera Detector
 
 ## Project Overview
 
